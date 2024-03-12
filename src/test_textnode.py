@@ -1,5 +1,5 @@
 import unittest
-from textnode import TextNode
+from textnode import TextNode, text_node_to_html_node
 
 
 class TestTextNode(unittest.TestCase):
@@ -26,8 +26,16 @@ class TestTextNode(unittest.TestCase):
     def test_repr(self):
         node = TextNode("This is a string", "bold", "https://www.google.com")
         self.assertEqual(
-            "TextNode(TEXT=This is a string, TEXT_TYPE=bold, URL=https://www.google.com)",
+            "TextNode(TEXT=This is a string, TEXT_TYPE=bold, url=https://www.google.com)",
             repr(node)
+        )
+
+    def test_text_to_html(self):
+        texttester = TextNode("this is a hyperlink", "link", "https://www.google.com")
+        html = text_node_to_html_node(texttester).to_html()
+        self.assertEqual(
+            '<a href="https://www.google.com">this is a hyperlink</a>',
+            html
         )
 
 if __name__ == "__main__":
