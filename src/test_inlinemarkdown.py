@@ -1,6 +1,12 @@
 import unittest, re
 from textnode import TextNode, type_verify
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import (
+    split_nodes_delimiter, 
+    extract_markdown_images, 
+    extract_markdown_links, 
+    split_nodes_images,
+    split_nodes_links
+)
 
 
 class TestInlineMarkdown(unittest.TestCase):
@@ -96,7 +102,52 @@ class TestInlineMarkdown(unittest.TestCase):
             extract_markdown_links(text)
         )
 
+    def test_split_nodes_images(self):
+        node = TextNode((
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)" 
+            "and another ![second image](https://i.imgur.com/3elNhQu.png)"),
+            "text",
+        )
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", "text"),
+                TextNode("image", "image", "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode("and another ", "text"),
+                TextNode("second image", "image", "https://i.imgur.com/3elNhQu.png"),
+            ],
+            split_nodes_images([node])
+        )
 
+    def test_split_nodes_images_2(self):
+        node = TextNode(
+            "![picture](https://i.imgur.com//fjdsaf.png) Here is an image!", "text"
+        )
+        self.assertListEqual(
+            [
+                TextNode("picture", "image", "https://i.imgur.com//fjdsaf.png"),
+                TextNode(" Here is an image!", "text")
+            ],
+            split_nodes_images([node])
+        )
+        
+    def test_split_links(self):
+        node = TextNode((
+            "This is text with a [link](https://boot.dev) and "
+            "[another link](https://blog.boot.dev) with text that follows"
+            ),
+            "text"
+        )
+        new_nodes = split_nodes_links([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", "text"),
+                TextNode("link", "link", "https://boot.dev"),
+                TextNode(" and ", "text"),
+                TextNode("another link", "link", "https://blog.boot.dev"),
+                TextNode(" with text that follows", "text"),
+            ],
+            new_nodes,
+        )
 
 if __name__ == "__main__":
     unittest.main()
