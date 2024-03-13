@@ -6,7 +6,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     type_verify(text_type)
     for old_node in old_nodes:
-        if not isinstance(old_node, TextNode):
+        if old_node.text_type != "text":
             new_nodes.append(old_node)
             continue
         split_nodes = []
@@ -83,4 +83,13 @@ def extract_markdown_images(text):
     return re.findall(r"!\[(.*?)\]\((.*?)\)", text)
 
 def extract_markdown_links(text):
-    return re.findall(r"\[(.*?)\]\((.*?)\)", text)                
+    return re.findall(r"\[(.*?)\]\((.*?)\)", text)
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, "text")]
+    nodes = split_nodes_delimiter(nodes, "**", "bold")
+    nodes = split_nodes_delimiter(nodes, "*", "italic")
+    nodes = split_nodes_delimiter(nodes, "`", "code")
+    nodes = split_nodes_images(nodes)
+    nodes = split_nodes_links(nodes)
+    return nodes

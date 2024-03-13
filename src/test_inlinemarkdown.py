@@ -5,7 +5,8 @@ from inline_markdown import (
     extract_markdown_images, 
     extract_markdown_links, 
     split_nodes_images,
-    split_nodes_links
+    split_nodes_links,
+    text_to_textnodes
 )
 
 
@@ -148,6 +149,28 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
+    
+    def test_text_to_textnodes(self):
+        nodes = text_to_textnodes(
+            "This is **bold text** with an *italic* word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)"
+        )
+        self.assertListEqual(
+            [
+                TextNode("This is ", "text"),
+                TextNode("bold text", "bold"),
+                TextNode(" with an ", "text"),
+                TextNode("italic", "italic"),
+                TextNode(" word and a ", "text"),
+                TextNode("code block", "code"),
+                TextNode(" and an ", "text"),
+                TextNode("image", "image", "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and a ", "text"),
+                TextNode("link", "link", "https://boot.dev"),
+            ],
+            nodes,
+        )
+
+
 
 if __name__ == "__main__":
     unittest.main()
