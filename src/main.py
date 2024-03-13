@@ -1,4 +1,4 @@
-from textnode import TextNode, text_node_to_html_node
+from textnode import TextNode, text_node_to_html_node, type_verify
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def main():
