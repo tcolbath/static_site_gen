@@ -53,3 +53,6 @@ def block_to_block_type(block):
     if all_lines == True:
         return(block_type)
     return("par")
+
+def quote_to_html(block):
+    
