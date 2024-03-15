@@ -13,7 +13,7 @@ def extract_title(markdown):
     raise Exception("No Title Found")
 
 def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}...")
+    print(f"Generating page from {from_path} using {template_path} -> {dest_path}...")
     with open(from_path, encoding="utf-8") as ff:
         markdown_file = ff.read()
     with open(template_path, encoding="utf-8") as tf:
@@ -27,3 +27,12 @@ def generate_page(from_path, template_path, dest_path):
         os.makedirs(dest_dir)
     with open(dest_path, 'w', encoding="utf-8") as df:
         df.write(dest_file)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        generate_page(from_path, template_path, dest_path)
